@@ -120,20 +120,25 @@ def generate_character(update: Update, context: CallbackContext) -> str:
             return response
 
 def generate_retainer(update: Update, context: CallbackContext) -> str:
-    attributes = {}
-    for attribute_name in ['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma']:
-        attribute_value = roll_attribute()
-        modifier = calculate_modifier(attribute_value)
-        attributes[attribute_name] = {
-            'Valor': attribute_value,
-            'Modificador': modifier
-        }
-    total_modifiers = sum(attribute['Modificador'] for attribute in attributes.values())
-    response = '*Aprendiz gerado:*\n'
-    for attribute_name, attribute_info in attributes.items():
-        response += f'*{attribute_name}:* {attribute_info["Valor"]} (Modificador: {attribute_info["Modificador"]})\n'
-    response += f'\n*Total dos Modificadores:* {total_modifiers}\n'
-    return response
+    while True:
+        attributes = {}
+        for attribute_name in ['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma']:
+            attribute_value = roll_attribute()
+            modifier = calculate_modifier(attribute_value)
+            attributes[attribute_name] = {
+                'Valor': attribute_value,
+                'Modificador': modifier
+            }
+
+        total_modifiers = sum(attribute['Modificador'] for attribute in attributes.values())
+
+        if total_modifiers > 0:
+            response = '*Aprendiz gerado:*\n'
+            for attribute_name, attribute_info in attributes.items():
+                response += f'*{attribute_name}:* {attribute_info["Valor"]} (Modificador: {attribute_info["Modificador"]})\n'
+            response += f'\n*Total dos Modificadores:* {total_modifiers}\n'
+            return response
+
 
 async def dn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = generate_character(update, context)
